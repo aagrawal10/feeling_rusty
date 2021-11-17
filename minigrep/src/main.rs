@@ -31,16 +31,10 @@ fn get_file_as_str(filename: &str) -> Result<String, Box<dyn error::Error>> {
 
 
 fn minigrep<'a>(contents: &'a str, query: & str) -> Vec<&'a str> {
-    let mut result: Vec<&str> = Vec::new();
-    for line in contents.lines() {
-        if !line.to_lowercase().contains(&query.to_lowercase()) {
-            continue;
-        }
-
-        result.push(line);
-    }
-
-    return result;
+    contents
+    .lines()
+    .filter(|line| line.to_lowercase().contains(&query.to_lowercase()))
+    .collect()
 }
 
 
