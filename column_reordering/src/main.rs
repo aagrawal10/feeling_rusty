@@ -20,10 +20,15 @@ fn get_final_column_order(curr_columns: Vec<& str>, source_columns: Vec<& str>) 
 
     // Create a map of column_name by count in curr_columns
     let mut num_columns_by_name: HashMap<&str, i32> = HashMap::new();
-    for column_name in source_columns.iter() {
+    let mut all_indices_of_column: HashMap<&str, Vec<i32>> = HashMap::new();
+    for (index, column_name) in source_columns.iter().enumerate() {
         let curr_value = num_columns_by_name.entry(column_name).or_insert(0);
         *curr_value += 1;
+
+        let curr_indices = all_indices_of_column.entry(column_name).or_insert(Vec::new());
+        curr_indices.push(index as i32);
     }
+
 
     let mut num_columns_in_header_by_name: HashMap<&str, i32> = HashMap::new();
     for column_name in curr_columns.iter() {
@@ -38,12 +43,8 @@ fn get_final_column_order(curr_columns: Vec<& str>, source_columns: Vec<& str>) 
             continue;
         }
 
-        let all_indices_of_column: Vec<usize> = source_columns.iter()
-                                                            .enumerate()
-                                                            .filter(|&(_, cn)| cn == column_name)
-                                                            .map(|(i, _)| i)
-                                                            .collect();
-        result.push(all_indices_of_column[num_columns_already_in_header as usize] as i32);
+        let all_indices_of_curr_column = &all_indices_of_column[column_name];
+        result.push(all_indices_of_curr_column[num_columns_already_in_header as usize] as i32);
         *num_columns_in_header_by_name.get_mut(column_name).unwrap() += 1;
     }
 
@@ -70,7 +71,6 @@ fn main() {
     ];
 
     let result = get_final_column_order(curr_columns, source_columns);
-    println!("{:?}", result);
 
     // Final set of columns should be
     // A B C F G H Z B H
