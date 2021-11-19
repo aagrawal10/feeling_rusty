@@ -15,7 +15,7 @@
 use std::collections::HashMap;
 
 
-fn get_final_column_order(curr_columns: Vec<& str>, source_columns: Vec<& str>) -> Vec<i32> {
+fn get_final_column_order(curr_columns: &Vec<& str>, source_columns: &Vec<& str>) -> Vec<i32> {
     let mut result: Vec<i32> = Vec::new();
 
     // Create a map of column_name by count in curr_columns
@@ -31,7 +31,7 @@ fn get_final_column_order(curr_columns: Vec<& str>, source_columns: Vec<& str>) 
 
 
     let mut num_columns_in_header_by_name: HashMap<&str, i32> = HashMap::new();
-    for column_name in curr_columns.iter() {
+    for column_name in curr_columns {
         if !num_columns_by_name.contains_key(column_name) {
             // The column is no longer present in the source, skip this.
             continue;
@@ -70,7 +70,7 @@ fn main() {
         "Z", "A", "B", "B", "C", "F", "G", "H", "H"
     ];
 
-    let result = get_final_column_order(curr_columns, source_columns);
+    let result = get_final_column_order(&curr_columns, &source_columns);
 
     // Final set of columns should be
     // A B C F G H Z B H
