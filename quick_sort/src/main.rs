@@ -18,4 +18,8 @@ fn main() {
     let mut arr = vec!["ASDF", "ABC", "dfkjsfkl", "asajdjs"];
     quick_sort::sort(& mut arr);
     assert_eq!(arr, vec!["ABC", "ASDF", "asajdjs", "dfkjsfkl"]);
+
+    let mut arr = vec![1, 2, 3, 4];
+    quick_sort::sort_by(& mut arr, & mut |a, b| b.partial_cmp(a).unwrap());
+    assert_eq!(arr, vec![4, 3, 2, 1]);
 }
