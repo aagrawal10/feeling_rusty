@@ -1,11 +1,10 @@
 // Quick Sort implementation using generics
-// TODO: Why was FnMut used here?
 
-fn partition<T, F: FnMut(&T, &T) -> bool> (
+fn partition<T, F: Fn(&T, &T) -> bool> (
     arr: & mut Vec<T>,
     low: usize,
     high: usize,
-    cmp: & mut F,
+    cmp: & F,
 ) -> usize {
     let mut i = low;
     let mut j = high;
@@ -29,8 +28,8 @@ fn sort_internal<T, F> (
     arr: & mut Vec<T>,
     low: usize,
     high: usize,
-    cmp: & mut F
-) where F: FnMut(&T, &T) -> bool{
+    cmp: & F
+) where F: Fn(&T, &T) -> bool{
     if low >= high {
         return;
     }
@@ -46,7 +45,7 @@ fn sort_internal<T, F> (
 }
 
 pub fn sort<T: PartialOrd> (arr: & mut Vec<T>) {
-    sort_internal(arr, 0, arr.len() - 1, & mut |a: &T, b: &T| {
+    sort_internal(arr, 0, arr.len() - 1, & |a: &T, b: &T| {
         match a.partial_cmp(b).unwrap() {
             std::cmp::Ordering::Equal | std::cmp::Ordering::Less => false,
             std::cmp::Ordering::Greater => true,
@@ -56,9 +55,9 @@ pub fn sort<T: PartialOrd> (arr: & mut Vec<T>) {
 
 pub fn sort_by<T, F> (
     arr: & mut Vec<T>,
-    cmp: & mut F
-) where F: FnMut(&T, &T) -> std::cmp::Ordering{
-    sort_internal(arr, 0, arr.len() - 1, & mut |a: &T, b: &T| {
+    cmp: & F
+) where F: Fn(&T, &T) -> std::cmp::Ordering{
+    sort_internal(arr, 0, arr.len() - 1, & |a: &T, b: &T| {
         match cmp(a, b) {
             std::cmp::Ordering::Equal | std::cmp::Ordering::Less => false,
             std::cmp::Ordering::Greater => true,
