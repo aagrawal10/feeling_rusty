@@ -13,8 +13,32 @@ struct Column {
     children: Rc<RefCell<Vec<Rc<Column>>>>,
 }
 
+#[derive(Debug)]
+#[derive(PartialEq)]
+struct ResultColumn {
+    name: String,
+    children: Vec<ResultColumn>,
+}
 
-fn get_json_tree(flattened_list: & mut Vec<& str>) -> Rc<RefCell<Vec<Rc<Column>>>> {
+impl ResultColumn {
+    fn from(column: Column) -> ResultColumn {
+        ResultColumn {
+            name: column.name,
+            children: Rc::try_unwrap(column.children).unwrap().into_inner().into_iter().map(
+                |x| ResultColumn::from(Rc::try_unwrap(x).unwrap())
+            ).collect(),
+        }
+    }
+
+    fn pretty_print(& self, indent_level: usize) {
+        println!("{}{}", String::from_iter(vec!["-"; indent_level]) ,self.name);
+        for child in self.children.iter() {
+            (*child).pretty_print(indent_level + 1);
+        }
+    }
+}
+
+fn get_json_tree(flattened_list: & mut Vec<& str>) -> Vec<ResultColumn> {
     let json_tree: Rc<RefCell<Vec<Rc<Column>>>> = Rc::new(RefCell::new(Vec::new()));
     let mut json_tree_map: HashMap<String, Rc<Column>> = HashMap::new();
 
@@ -49,16 +73,49 @@ fn get_json_tree(flattened_list: & mut Vec<& str>) -> Rc<RefCell<Vec<Rc<Column>>
         }
     }
 
-    return json_tree;
+    drop(json_tree_map);
+
+    return Rc::try_unwrap(json_tree).unwrap().into_inner().into_iter().map(
+        |x| ResultColumn::from(Rc::try_unwrap(x).unwrap())
+    ).collect();
 }
 
 
 fn main() {
     let mut simple_list = vec!["a.b", "a.b.c", "a", "c.d"];
-    println!("{:?}", simple_list);
-
     let json_tree = get_json_tree(& mut simple_list);
-    println!("{:?}", json_tree);
+    println!("{:?}", simple_list);
+    for item in json_tree.iter() {
+        item.pretty_print(0);
+    }
+    assert_eq!(
+        json_tree,
+        vec! [
+            ResultColumn{
+                name: String::from("a"),
+                children: vec![
+                    ResultColumn {
+                        name: String::from("a.b"),
+                        children: vec! [
+                            ResultColumn {
+                                name: String::from("a.b.c"),
+                                children: vec! [],
+                            }
+                        ]
+                    },
+                ]
+            },
+            ResultColumn {
+                name: String::from("c"),
+                children: vec! [
+                    ResultColumn {
+                        name: String::from("c.d"),
+                        children: vec! [],
+                    }
+                ]
+            }
+        ]
+    );
 
     let mut more_complex_list = vec![
         "name", "address", "address.city", "address.zipcode", "age", "card", "card.last4", "card.expiry", "card.issue",
@@ -66,5 +123,7 @@ fn main() {
     ];
     let json_tree = get_json_tree(& mut more_complex_list);
     println!("{:?}", more_complex_list);
-    println!("{:?}", json_tree);
+    for item in json_tree.iter() {
+        item.pretty_print(0);
+    }
 }
