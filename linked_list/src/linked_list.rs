@@ -125,15 +125,13 @@ impl<T> LinkedList<T> {
                 // The current list is empty, set head and tail to the other lists head and tail.
                 self.head = Some(Rc::clone(other.head.as_ref().unwrap()));
                 self.tail = Some(Rc::clone(other.tail.as_ref().unwrap()));
+                self.length = other.length;
             }
             Some(node) => {
                 // Both the lists are non-empty, join them.
                 self.tail = Some(Rc::clone(other.tail.as_ref().unwrap()));
                 (*node).borrow_mut().next = Some(Rc::clone(other.head.as_ref().unwrap()));
                 self.length += other.length;
-                other.head = None;
-                other.tail = None;
-                other.length = 0;
             }
         }
 

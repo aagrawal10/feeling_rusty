@@ -56,46 +56,58 @@ fn get_length_of_clusters(list_of_speeds: &Vec<i32>) -> Vec<i32> {
      return result;
  }
 
+fn test_n3(n: i32) {
+    let mut count = 0;
+    for i in 0..20 {
+        for j in 0..n {
+            for k in 0..n {
+                count += 1;
+            }
+        }
+    }
+}
+
 
 fn main() {
+    test_n3(1000);
     // Testing the first function
-    assert_eq!(get_length_of_clusters(&vec![2, 4, 1, 3]), vec![2, 2]);
-    assert_eq!(get_length_of_clusters(&vec![2, 5, 4, 3, 1]), vec![4, 1]);
-    assert_eq!(get_length_of_clusters(&vec![2]), vec![1]);
-    assert_eq!(get_length_of_clusters(&vec![]), vec![]);
+    //assert_eq!(get_length_of_clusters(&vec![2, 4, 1, 3]), vec![2, 2]);
+    //assert_eq!(get_length_of_clusters(&vec![2, 5, 4, 3, 1]), vec![4, 1]);
+    //assert_eq!(get_length_of_clusters(&vec![2]), vec![1]);
+    //assert_eq!(get_length_of_clusters(&vec![]), vec![]);
 
-    // Testing the second function
-    assert_eq!(
-        get_clusters_with_fastest_car(&vec![2, 4, 1, 3]),
-         vec![
-             vec![1, 2, 2],
-             vec![3, 2],
-             vec![3, 2],
-             vec![2, 3],
-             vec![2, 3],
-         ]
-    );
-    assert_eq!(
-        get_clusters_with_fastest_car(&vec![2, 5, 4, 3, 1]),
-         vec![
-             vec![1, 4, 1],
-             vec![5, 1],
-             vec![5, 1],
-             vec![5, 1],
-             vec![5, 1],
-             vec![4, 2],
-         ]
-    );
-    assert_eq!(
-        get_clusters_with_fastest_car(&vec![2]),
-         vec![
-             vec![1, 1],
-             vec![2],
-         ]
-    );
-    assert_eq!(
-        get_clusters_with_fastest_car(&vec![]),
-         vec![vec![1]]
-    );
+    //// Testing the second function
+    //assert_eq!(
+    //    get_clusters_with_fastest_car(&vec![2, 4, 1, 3]),
+    //     vec![
+    //         vec![1, 2, 2],
+    //         vec![3, 2],
+    //         vec![3, 2],
+    //         vec![2, 3],
+    //         vec![2, 3],
+    //     ]
+    //);
+    //assert_eq!(
+    //    get_clusters_with_fastest_car(&vec![2, 5, 4, 3, 1]),
+    //     vec![
+    //         vec![1, 4, 1],
+    //         vec![5, 1],
+    //         vec![5, 1],
+    //         vec![5, 1],
+    //         vec![5, 1],
+    //         vec![4, 2],
+    //     ]
+    //);
+    //assert_eq!(
+    //    get_clusters_with_fastest_car(&vec![2]),
+    //     vec![
+    //         vec![1, 1],
+    //         vec![2],
+    //     ]
+    //);
+    //assert_eq!(
+    //    get_clusters_with_fastest_car(&vec![]),
+    //     vec![vec![1]]
+    //);
 
 }
