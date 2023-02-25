@@ -12,12 +12,18 @@ type Node struct {
 
 func newNode(columnName string) *Node {
 	n := Node{columnName: columnName}
-	n.children = []*Node{}
 	return &n
 }
 
+func (node *Node) printNode(level int) {
+	fmt.Println(strings.Repeat("--", level), node.columnName)
+	for _, childNode := range node.children {
+		childNode.printNode(level + 1)
+	}
+}
+
 func getJsonTree(allKnownFields []string) *[]*Node {
-	result := []*Node{}
+	var result []*Node
 	existingNodesMap := make(map[string]*Node)
 
 	// Input is going to be like ["a", "a.b", "b.c", "b", "d.e.f"]
@@ -45,21 +51,20 @@ func getJsonTree(allKnownFields []string) *[]*Node {
 	return &result
 }
 
-func printResults(result *[]*Node, level int) {
+func printResults(result *[]*Node) {
 	for _, node := range *result {
-		fmt.Println(strings.Repeat("--", level), node.columnName)
-		if len(node.children) > 0 {
-			printResults(&node.children, level+1)
-		}
+		node.printNode(0)
 	}
 }
 
 func main() {
 	// case 1
 	result := getJsonTree([]string{"a", "a.b", "b.c", "b", "d.e.f"})
-	printResults(result, 0)
+	printResults(result)
+
+	fmt.Println("-----------------------------")
 
 	// case 2
 	result = getJsonTree([]string{"d.e.f.g", "f.g", "b.c.d"})
-	printResults(result, 0)
+	printResults(result)
 }
